@@ -1,0 +1,12 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ContainerFile
+    image: fastapi-cnpj:latest
+    container_name: fastapi_cnpj_api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=development
+    restart: always
