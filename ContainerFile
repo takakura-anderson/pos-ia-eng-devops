@@ -1,0 +1,23 @@
+# Stage 1: Final runtime stage
+FROM public.ecr.aws/docker/library/python:3.14-alpine
+
+# Set environment variables for optimized python container execution
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH"
+
+# Set the working directory
+WORKDIR /app
+
+# Copy app folder and requirements.txt to the container
+COPY app/ ./app/
+COPY requirements.txt .
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Start the FastAPI application with uvicorn
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
