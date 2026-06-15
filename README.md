@@ -1,73 +1,76 @@
-# pos-ia-eng-devops
-Projeto de IA / Engenharia de Dados / DevOps
+# pos-ia-eng-devops 🚀
 
-## Ideia Base
-- API em Python (FastAPI)
-- Podman / Podman Composer
-- Ler dados públicos da Receita Federal CNPJ
-- Engenharia de Dados e Machine Learning com Isso
-- #TODO: Python Buffer
-- #TODO: Multistage Build otimizado para Podman (sem privilégios de root)
-- #TODO: VirtualEnv Rootless
-- #TODO: Diferença de (SLIM) vs (ALPINE) vs (STABLE)
-- #TODO: Implementar Requests para Leitura de Dados Públicos
-- #TODO: Pesquisarem Requirements.txt vs PyProject.toml vs Poetry
-- #TODO: Health Check Endpoint
-- #TODO: Configuração ContainerDev // Python Interpreter no VSCode
-- #TODO: Linter - Black - Ruff - Flake8
-- #TODO: Tradeoff de Gerenciamento de Camadas de uma Imagem (Velocidade // Tamanho // Segurança)
-- #TODO: OpenAPI Spec
-- #TODO: Garage S3
-- #TODO: Compose Spec para Orquestração de Containers
-- #TODO: Registro Imagens
-- #TODO: Branch Control
+Repositório base para o curso de **DevOps e MLOps Aplicado a Engenharia de Dados**.
+Este projeto contém o esqueleto inicial da arquitetura. Durante os laboratórios de cada encontro, você será guiado para completar os **TODOs** espalhados pelo código, evoluindo a infraestrutura e o pipeline de dados de ponta a ponta.
 
+---
 
-## Pipelines
+## 🎯 Objetivo do Projeto
 
-### CD (Continuous Delivery)
+Criar um pipeline de dados completo e robusto que:
+1. Faz a ingestão dos dados públicos de CNPJ da Receita Federal.
+2. Trata e carrega esses dados (Data Engineering).
+3. Armazena as informações em um Data Warehouse local (PostgreSQL).
+4. Persiste artefatos brutos/processados em um Object Storage compatível com S3 (Garage S3).
+5. É orquestrado e conteinerizado localmente com Podman e Podman-Compose.
+6. Possui CI/CD com verificações de qualidade automatizadas e deploy em Kubernetes (Kind).
+7. Versiona os dados com DVC e gerencia modelos com MLflow.
 
-- #TODO: Criar pipelines para GitHub Actions.
+---
 
-### CI (Continuous Integration)
+## 🏗️ Estrutura do Repositório (Base)
 
-- #TODO: Criar pipelines para GitHub Actions.
+```text
+├── src/                   # Código fonte Python
+│   ├── main.py            # API FastAPI (esqueleto)
+│   └── ingest.py          # Script de ingestão batch (TODO)
+├── ContainerFile          # Arquivo de construção da imagem (TODO: multistage)
+├── compose.yaml           # Orquestração local (TODO: db e storage)
+├── Makefile               # Automação de tarefas locais (TODO)
+├── requirements.txt       # Dependências do projeto (TODO: libs de dados)
+└── .gitignore             # Arquivos ignorados (TODO)
+```
 
-## Estrutura do Projeto
+---
 
-- `ContainerFile`: Arquivo de definição de container otimizado para Podman (multi-stage build e sem privilégios de root).
-- `podman-compose.yml`: Configuração para subir o ambiente usando Podman Composer.
-- `requirements.txt`: Dependências Python (FastAPI e Uvicorn).
-- `app/main.py`: Código-fonte inicial da API FastAPI com health check integrado.
-- #TODO
+## ✅ Checklist de Implementação (Labs)
 
-## Como Executar o Projeto
+À medida que avançamos nas aulas, você deverá implementar as seguintes melhorias:
+
+### Aula 1: Fundamentos DevOps e Ingestão de Dados
+- [ ] **Lab 1.1**: Implementar `Multi-stage build` e usuário *rootless* no `ContainerFile`.
+- [ ] **Lab 1.2**: Adicionar serviços `db` (PostgreSQL) e `storage` (Garage) no `compose.yaml`, incluindo configuração de volumes locais e *healthchecks*.
+- [ ] **Lab 1.3**: Completar o `Makefile` com comandos práticos (`build`, `up`, `down`, `test`, `clean`).
+- [ ] **Lab 1.4**: Desenvolver a rotina em `src/ingest.py` usando `pandas` (ou similar) para baixar dados, limpar e enviar para o banco. Adicionar libs necessárias no `requirements.txt`.
+
+### Aula 2: CI/CD e Data Quality
+- [ ] **Lab 2.1**: Configurar pipelines CI/CD usando GitHub Actions (linting, testes, build).
+- [ ] **Lab 2.2**: Implementar validação de *Data Quality* (ex: com Soda Core) integrada ao pipeline.
+- [ ] **Lab 2.3**: Empacotar o deploy para um cluster Kubernetes local via `Kind`.
+
+### Aula 3: MLOps
+- [ ] **Lab 3.1**: Subir ambiente MLflow via compose e versionar tracking de experimentos.
+- [ ] **Lab 3.2**: Configurar DVC para versionar os arquivos grandes `.csv` / `.parquet` diretamente no repositório integrado ao Garage S3.
+- [ ] **Lab 3.3**: Conteinerizar o serviço de Model Serving como uma API REST robusta pronta para predições em produção.
+
+---
+
+## 💻 Como Iniciar (Ambiente Atual)
 
 ### Pré-requisitos
 - [Podman](https://podman.io/) instalado.
-- [Podman Composer](https://github.com/containers/podman-compose) (opcional, para orquestração de containers).
+- [Podman Compose](https://github.com/containers/podman-compose).
+- (Opcional) Make.
 
-### Opção 1: Executando diretamente com Podman
+### Executando o esqueleto da API
+```bash
+# 1. Construir a imagem base
+podman build -f ContainerFile -t fastapi-cnpj .
 
-1. **Construir a imagem**:
-   ```bash
-   podman build -f ContainerFile -t fastapi-cnpj .
-   ```
+# 2. Subir via compose
+podman-compose up -d --build
+```
+A API inicial estará disponível em `http://localhost:8000/docs`.
 
-2. **Executar o container**:
-   ```bash
-   podman run -d -p 8000:8000 --name fastapi_api fastapi-cnpj
-   ```
-
-### Opção 2: Executando com Podman Composer
-
-1. **Subir o serviço**:
-   ```bash
-   podman-compose up -d --build
-   ```
-
-### Acessando a API
-A API estará disponível em `http://localhost:8000`.
-- **Root Endpoint**: [http://localhost:8000/](http://localhost:8000/)
-- **Documentação Interativa Swagger**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **Endpoint de Health Check**: [http://localhost:8000/health](http://localhost:8000/health)
+---
+> ⚠️ **Dica**: Procure pelas tags `# TODO` nos arquivos do repositório para saber exatamente onde colocar a mão na massa!
