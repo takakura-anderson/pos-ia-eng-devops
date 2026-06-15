@@ -1,5 +1,11 @@
 # pos-ia-eng-devops 🚀
 
+![Python](https://img.shields.io/badge/python-3.14-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688.svg?logo=fastapi)
+![Docker](https://img.shields.io/badge/Podman-ready-blue?logo=podman)
+![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)
+<!-- TODO: Pesquise sobre https://shields.io/ e aprenda a usar badges reais. Eles ajudam a comunicar o status, versão e qualidade do seu projeto de forma profissional! -->
+
 Repositório base para o curso de **DevOps e MLOps Aplicado a Engenharia de Dados**.
 Este projeto contém o esqueleto inicial da arquitetura. Durante os laboratórios de cada encontro, você será guiado para completar os **TODOs** espalhados pelo código, evoluindo a infraestrutura e o pipeline de dados de ponta a ponta.
 
@@ -28,8 +34,11 @@ Criar um pipeline de dados completo e robusto que:
 ├── compose.yaml           # Orquestração local (TODO: db e storage)
 ├── Makefile               # Automação de tarefas locais (TODO)
 ├── requirements.txt       # Dependências do projeto (TODO: libs de dados)
-└── .gitignore             # Arquivos ignorados (TODO)
+├── .gitignore             # Arquivos ignorados no Git (TODO)
+└── .containerignore       # O que não deve ir para a imagem de container (TODO)
 ```
+
+> 💡 **Dica de Ouro**: Se você está em dúvida sobre o que ignorar no Git, use o site [gitignore.io](https://www.toptal.com/developers/gitignore) para gerar templates automáticos. Nunca suba credenciais ou arquivos inúteis pro repositório! Além disso, lembre-se que o `.containerignore` faz o mesmo trabalho, mas focando em impedir que arquivos desnecessários inchem sua imagem do container durante o `podman build`.
 
 ---
 
