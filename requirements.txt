@@ -1,2 +1,13 @@
-fastapi
-uvicorn[standard]
+fastapi==0.111.0
+uvicorn==0.30.1
+
+# TODO: Escolher e adicionar bibliotecas de manipulação de dados
+# Recomendação: pandas (para datasets menores/médios)
+# Outras opções: polars, duckdb
+
+# TODO: Escolher e adicionar SDK de banco de dados
+# Recomendação para Postgres: psycopg2-binary ou asyncpg
+# Recomendação ORM (opcional): sqlalchemy ou sqlmodel
+
+# TODO: Escolher e adicionar SDK de Object Storage (S3 API compatível)
+# Recomendação: boto3 ou minio

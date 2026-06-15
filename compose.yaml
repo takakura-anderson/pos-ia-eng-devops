@@ -10,3 +10,17 @@ services:
     environment:
       - ENV=development
     restart: always
+    # TODO: Configurar depends_on para o db com condition: service_healthy
+
+  # TODO: Adicionar serviço 'db' (PostgreSQL)
+  # - Definir imagem oficial do Postgres
+  # - Configurar credenciais via environment
+  # - Adicionar volume local para persistência de dados
+  # - Configurar healthcheck (pg_isready)
+
+  # TODO: Adicionar serviço 'storage' (Garage S3 compatível ou MinIO)
+  # - Definir imagem
+  # - Configurar credenciais
+  # - Configurar porta (ex: 3900)
+
+# TODO: Declarar volumes para persistência do banco e do storage
