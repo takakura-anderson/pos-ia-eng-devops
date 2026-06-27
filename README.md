@@ -6,6 +6,9 @@
 ![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)
 <!-- TODO: Pesquise sobre https://shields.io/ e aprenda a usar badges reais. Eles ajudam a comunicar o status, versão e qualidade do seu projeto de forma profissional! -->
 
+> [!NOTE]
+> Este repositório utiliza ferramentas de Inteligência Artificial para apoiar seu desenvolvimento. Durante as aulas para fins educativos, testamos as habilidades de "Vibe Code" e exploramos a preparação do repositório orientada a **Spec Driven Development**.
+
 Repositório base para o curso de **DevOps e MLOps Aplicado a Engenharia de Dados**.
 Pipeline completo de dados públicos de CNPJ da Receita Federal — da ingestão ao analytics.
 
