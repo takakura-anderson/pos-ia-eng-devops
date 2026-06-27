@@ -16,7 +16,6 @@ from botocore.exceptions import ClientError
 
 from src.utils import format_bytes as _format_bytes, get_s3_client as _get_s3_client
 from src.config import (
-    S3_ENDPOINT_URL,
     S3_BUCKET_NAME,
     DATA_RAW_DIR,
     DATA_PROCESSED_DIR,

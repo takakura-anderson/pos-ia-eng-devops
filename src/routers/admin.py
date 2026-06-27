@@ -510,13 +510,13 @@ async def trigger_transform_file(
     if record.status in ["transformed", "loaded"] and not force:
         return {
             "status": "skipped",
-            "message": f"Parquet já processado no S3. Use ?force=true para reprocessar.",
+            "message": "Parquet já processado no S3. Use ?force=true para reprocessar.",
         }
 
     def run_file_transform_bg(zip_name: str, month: str, force_flag: bool):
         import os as _os
         from src.jobs.transform import process_file
-        from src.config import DATA_RAW_DIR, DATA_PROCESSED_DIR
+        from src.config import DATA_PROCESSED_DIR
 
         zip_p = _os.path.join(DATA_RAW_DIR, month, zip_name)
         out_p = _os.path.join(DATA_PROCESSED_DIR, month, zip_name.replace(".zip", ".parquet"))
@@ -797,7 +797,7 @@ async def trigger_load_db_file(
     if record.status == "loaded" and if_exists == "skip":
         return {
             "status": "skipped",
-            "message": f"Parquet já carregado no banco. Use if_exists=replace ou append para forçar.",
+            "message": "Parquet já carregado no banco. Use if_exists=replace ou append para forçar.",
         }
 
     def run_load_file_bg(month: str, target: str, mode: str):

@@ -7,7 +7,7 @@ Países, Municípios, Qualificações, Naturezas Jurídicas, CNAEs).
 A tabela principal de Empresas está em empresa.py (single source of truth).
 """
 
-from sqlalchemy import Column, String, Integer, BigInteger, Date, Float
+from sqlalchemy import Column, String, Integer, Date
 from src.models.database import Base
 
 

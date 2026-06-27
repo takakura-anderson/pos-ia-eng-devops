@@ -62,7 +62,7 @@ async def s3_status():
 
         return {
             "status": "connected",
-            "endpoint": S3_ENDPOINT_URL,
+            "endpoint": s3.meta.endpoint_url,
             "target_bucket": S3_BUCKET_NAME,
             "target_bucket_exists": target_bucket_exists,
             "buckets": buckets,
@@ -72,7 +72,7 @@ async def s3_status():
     except Exception as e:
         return {
             "status": "error",
-            "endpoint": S3_ENDPOINT_URL,
+            "endpoint": s3.meta.endpoint_url,
             "target_bucket": S3_BUCKET_NAME,
             "error": str(e),
             "hint": (

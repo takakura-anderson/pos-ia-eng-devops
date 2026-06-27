@@ -17,10 +17,8 @@ Uso:
 """
 
 import argparse
-import io
 import logging
 import os
-import re
 import sys
 import zipfile
 
@@ -278,7 +276,7 @@ def explore_month(year_month: str, nrows: int = 500, target_file: str = None) ->
 
     # ── Sumário Final ──
     print(f"\n{SEPARATOR}")
-    print(f"  SUMÁRIO")
+    print("  SUMÁRIO")
     print(SEPARATOR)
     print(f"  Total de arquivos analisados  : {len(all_reports)}")
     print(f"  Arquivos mapeados (transform) : {len(all_reports) - len(unmapped)}")
