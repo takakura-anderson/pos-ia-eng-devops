@@ -1,5 +1,5 @@
 # Stage 1: Builder — instala dependências em ambiente isolado
-FROM public.ecr.aws/docker/library/python:3.14-alpine AS builder
+FROM public.ecr.aws/docker/library/python:3.13-slim AS builder
 
 WORKDIR /build
 
@@ -10,10 +10,10 @@ RUN python -m venv /opt/venv && \
     /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime — imagem final limpa e segura
-FROM public.ecr.aws/docker/library/python:3.14-alpine
+FROM public.ecr.aws/docker/library/python:3.13-slim
 
-# Criar usuário não-root para segurança
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# Criar usuário não-root para segurança (sintaxe Debian/Ubuntu)
+RUN groupadd -r appgroup && useradd -r -g appgroup -m appuser
 
 # Variáveis de ambiente para execução otimizada
 ENV PYTHONDONTWRITEBYTECODE=1 \
