@@ -114,4 +114,6 @@ explore: ## Explora dados raw sem modificá-los (ex: make explore MONTH=2026-04)
 logs: ## Mostra logs em tempo real
 	$(COMPOSE_CMD) logs -f
 
-
+data-quality: ## Executa testes de qualidade de dados com Great Expectations
+	@echo "🧪 Executando Great Expectations Checks..."
+	$(COMPOSE_CMD) exec api python -m src.jobs.data_quality
