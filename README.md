@@ -52,10 +52,14 @@ Criar um pipeline de dados completo e robusto que:
                          └────────┬──────────────┘
                                   │
                          ┌────────▼──────────────┐
-                         │  Metabase (:3000)      │
-                         │  FastAPI  (:8000/docs) │
-                         └────────────────────────┘
+                         │  Metabase (:3000)     │
+                         │  FastAPI  (:8000/docs)│
+                         │  MLflow   (:5001)     │
+                         └───────────────────────┘
 ```
+
+> **DVC**: Dados crus em `data/raw/` são versionados usando DVC, com o `Garage S3` como remote de storage (`dvc push/pull`).
+> **MLflow**: Usado para rastrear o treinamento de modelos RandomForest (experimentos, métricas, parâmetros) e gerenciar os artefatos (Model Registry). O FastAPI carrega a versão `latest` do modelo na inicialização.
 
 ---
 
@@ -83,7 +87,9 @@ Criar um pipeline de dados completo e robusto que:
 │   │   ├── sync.py        # Download com progresso, SHA-256, hash diff
 │   │   ├── transform.py   # CSV → Parquet (chunked, com regras de negócio)
 │   │   ├── load_db.py     # Parquet → PostgreSQL via psycopg2 COPY
-│   │   └── load_s3.py     # Upload para Garage S3 (raw + processed)
+│   │   ├── load_s3.py     # Upload para Garage S3 (raw + processed)
+│   │   ├── data_quality.py# Data Quality com Great Expectations
+│   │   └── train.py       # Pipeline de Treino (RandomForest + MLflow)
 │   ├── models/            # SQLAlchemy
 │   │   ├── database.py    # Engine, Session, Base
 │   │   ├── empresa.py     # Model Empresas
@@ -92,7 +98,8 @@ Criar um pipeline de dados completo e robusto que:
 │   └── routers/           # Endpoints HTTP
 │       ├── admin.py       # Dashboard, sync, transform, load-db, load-s3
 │       ├── empresas.py    # Consulta de empresas por CNPJ/razão social
-│       └── s3_status.py   # Status do Garage S3 e gap analysis
+│       ├── s3_status.py   # Status do Garage S3 e gap analysis
+│       └── ml_serving.py  # Model Serving (carrega de MLflow no startup)
 └── tests/
     ├── test_unit.py       # Testes unitários (transformação)
     └── test_e2e.py        # Testes E2E (API endpoints)
@@ -110,14 +117,14 @@ Criar um pipeline de dados completo e robusto que:
 - [x] **Bônus**: ADRs, discovery inteligente da RF, Admin Dashboard via API, hash SHA-256, Metabase.
 
 ### Aula 2: CI/CD e Data Quality
-- [ ] **Lab 2.1**: Pipelines CI/CD com GitHub Actions (linting, testes, build).
-- [ ] **Lab 2.2**: Data Quality com Soda Core integrado ao pipeline.
-- [ ] **Lab 2.3**: Deploy em Kubernetes local via Kind.
+- [x] **Lab 2.1**: Pipelines CI/CD com GitHub Actions (linting, testes, build, Trivy scan).
+- [x] **Lab 2.2**: Data Quality com Great Expectations integrado ao pipeline.
+- [ ] **Lab 2.3**: Deploy em Kubernetes local via Kind. *(Nota: Substituído 100% por Podman Compose, veja ADR 0001).*
 
 ### Aula 3: MLOps
-- [ ] **Lab 3.1**: Ambiente MLflow via compose para tracking de experimentos.
-- [ ] **Lab 3.2**: DVC para versionamento de dados integrado ao Garage S3.
-- [ ] **Lab 3.3**: Model Serving conteinerizado como API REST.
+- [x] **Lab 3.1**: Ambiente MLflow via compose para tracking de experimentos.
+- [x] **Lab 3.2**: Ambiente e libs base para Treino de Modelos.
+- [x] **Lab 3.3**: Model Serving conteinerizado como API REST.
 
 ---
 
@@ -148,6 +155,12 @@ make load-db MONTH=2026-04
 
 # 6. Upload para Garage S3 (raw + processed)
 make load-s3 MONTH=2026-04
+
+# 7. Rodar Data Quality Checks
+make data-quality
+
+# 8. Treinar modelo com MLflow
+podman compose exec api python -m src.jobs.train
 ```
 
 ### Monitoramento
@@ -174,6 +187,7 @@ make verify MONTH=2026-04
 | **Metabase** | http://localhost:3000 |
 | **PostgreSQL** | `localhost:5432` (user: postgres, db: cnpj) |
 | **Garage S3** | `localhost:3900` |
+| **MLflow** | http://localhost:5001 |
 
 ---
 
@@ -192,6 +206,7 @@ make verify MONTH=2026-04
 | `POST` | `/admin/load-s3/{ym}` | Upload S3 (raw + processed) |
 | `GET` | `/s3/objects` | Listar objetos no bucket |
 | `GET` | `/empresas/search?razao_social=...` | Buscar empresas |
+| `POST` | `/predict/` | Predição (Optante pelo Simples) via modelo carregado do MLflow |
 
 Documentação completa com exemplos: **http://localhost:8000/docs**
 
@@ -203,6 +218,12 @@ Consulte os ADRs em `docs/adr/`:
 - [ADR 0001](docs/adr/0001-usar-podman-em-vez-de-docker.md) — Podman em vez de Docker
 - [ADR 0002](docs/adr/0002-estrutura-api-e-jobs-batch.md) — Estrutura API + Jobs batch
 - [ADR 0003](docs/adr/0003-garage-como-object-storage.md) — Garage como Object Storage
+- [ADR 0004](docs/adr/0004-use-podman-compose-instead-of-kubernetes.md) — Podman em vez de Kubernetes
+- [ADR 0005](docs/adr/0005-use-pyarrow-for-large-files.md) — Chunking com PyArrow para arquivos massivos
+- [ADR 0006](docs/adr/0006-use-great-expectations-for-data-quality.md) — Validação de qualidade com Great Expectations
+- [ADR 0007](docs/adr/0007-estrategia-de-versionamento-de-dados-dvc.md) — Estratégia de Versionamento com DVC
+- [ADR 0008](docs/adr/0008-estrategia-de-model-serving.md) — Estratégia de Model Serving com MLflow
+
 
 ---
 
