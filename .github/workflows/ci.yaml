@@ -33,6 +33,19 @@ jobs:
       - name: Run Pytest
         run: make test
 
+      - name: Run Data Quality Checks (Great Expectations)
+        run: make data-quality
+
+      - name: Vulnerability Scan (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'fastapi-cnpj:latest'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
       - name: Stop Environment
         if: always()
         run: make down
